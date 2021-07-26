@@ -256,6 +256,17 @@ public class MainController {
 		return product.getSELLING_PRICE();
 	}
 	
+	@GetMapping("/productName/{id}")
+	@ResponseBody
+	public String productName(@PathVariable("id") int id, Model model) {
+		
+		Product product  = demoDao.singleProduct(id);
+		
+		
+		
+		return product.getPRODUCT_NAME();
+	}
+	
 	
 	@GetMapping("/finish/{id}")
 	public String finish(@PathVariable("id") int id, Model model) {
@@ -309,7 +320,7 @@ public class MainController {
 	
 	@PostMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void postResponseJsonContent(
+	public int postResponseJsonContent(
 	  @RequestBody String data) {
 		
 		JSONObject json = new JSONObject(data);
@@ -325,6 +336,12 @@ public class MainController {
 		System.out.println(out2);
 		System.out.println(out3);
 		
+		SalesInvoice salesInvoice  = new SalesInvoice();
+		
+		salesInvoice.setINVOICE_NUM(out);
+		salesInvoice.setINVOICE_DATE(out1);
+		salesInvoice.setCUSTOMER_NAME(out2);
+		
 		JSONArray jsonArray=new JSONArray(out3);
 		
 		ArrayList<SalesDetails> salesDetailsList = new ArrayList<>();
@@ -332,15 +349,33 @@ public class MainController {
 		 for(int i=0;i<jsonArray.length();i++) {
 		    	JSONObject jsonData=jsonArray.getJSONObject(i);
 		    	salesDetailsList.add(new
-		    			SalesDetails(0, Integer.valueOf(jsonData.getString ("Line")),
+		    			SalesDetails(0, Integer.valueOf(jsonData.getInt("Line")),
 		    					Integer.valueOf(out),
-		    					Integer.valueOf(jsonData.getString ("ProductID")),null,
-		    					Integer.valueOf(jsonData.getString ("Quantity")),
-		    					jsonData.getString ("Rate"), 
-		    					String.valueOf((Integer.valueOf(jsonData.getString ("Quantity")) * Integer.valueOf(jsonData.getString ("Rate"))))  ));
+		    					Integer.valueOf(jsonData.getString ("ProductID")), jsonData.getString ("Name"),
+		    					Integer.valueOf(jsonData.getInt("Quantity")),
+		    					String.valueOf(jsonData.getDouble("Rate")) , 
+		    					String.valueOf((Integer.valueOf(jsonData.getInt ("Quantity")) * Double.valueOf(jsonData.getDouble ("Rate"))))  ));
 			}
 		 
+		 
+		 
+		 double tot = 0;
+		 
+		 for(int i=0; i<salesDetailsList.size(); i++) {
+			 
+			 System.out.println("ok");
+			 
+			 tot += Double.valueOf(salesDetailsList.get(i).getAMOUNT());
+		 }
+		 
+		 salesInvoice.setTOTAL_AMT(String.valueOf(tot));
+		 
+		 System.out.println(salesInvoice);
 		 System.out.println(salesDetailsList);
+		 
+		 int n = demoDao.insertTest(salesInvoice, salesDetailsList);
+		 
+		 return n;
 	    
 	}
 }

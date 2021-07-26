@@ -36,6 +36,9 @@ public class DemoDao {
 	
 	SimpleJdbcCall getAllStatesJdbcCall11;
 	SimpleJdbcCall getAllStatesJdbcCall12;
+	
+	SimpleJdbcCall getAllStatesJdbcCall13;
+	SimpleJdbcCall getAllStatesJdbcCall14;
 
 	public DemoDao(DataSource dataSource) {
 
@@ -56,6 +59,9 @@ public class DemoDao {
 		
 		this.getAllStatesJdbcCall11 = new SimpleJdbcCall(dataSource);
 		this.getAllStatesJdbcCall12 = new SimpleJdbcCall(dataSource);
+		
+		this.getAllStatesJdbcCall13 = new SimpleJdbcCall(dataSource);
+		this.getAllStatesJdbcCall14 = new SimpleJdbcCall(dataSource);
 	}
 	
 	
@@ -543,5 +549,72 @@ public class DemoDao {
 	}
 
 	// total amount insert ends
+	
+	
+//	test insert starts 
+	
+	
+
+	public int insertTest(SalesInvoice salesInvoice, ArrayList<SalesDetails> salesDetailsList) {
+
+		System.out.println(salesInvoice);
+		
+		String a = salesInvoice.getINVOICE_NUM();
+		System.out.println(a);
+		String b = salesInvoice.getINVOICE_DATE();
+		System.out.println(b);
+		String c = salesInvoice.getCUSTOMER_NAME() ;
+		System.out.println(c);
+		double d = Double.valueOf(salesInvoice.getTOTAL_AMT());
+
+		
+
+		Map<String, Object> result = getAllStatesJdbcCall13.withCatalogName("DATA_PKG")
+				.withProcedureName("SALES_INSERT1")
+				.declareParameters(new SqlOutParameter("results", OracleTypes.INTEGER))
+				.execute(a, b, c, d);
+		
+		JSONObject json = new JSONObject(result);
+		String out = json.get("OUTPUT").toString();
+		
+		System.out.println(out);
+		
+		
+		for(int i=0; i<salesDetailsList.size(); i++) {
+			
+			int a1 = salesDetailsList.get(i).getLINE_NUMBER();
+			System.out.println(a1);
+			int b1 = salesDetailsList.get(i).getSALES_INVOICE_ID();
+			System.out.println(b1);
+			int c1 = salesDetailsList.get(i).getPRODUCT_ID() ;
+			System.out.println(c1);
+			String d1 = salesDetailsList.get(i).getPRODUCT_NAME() ;
+			int e1 = salesDetailsList.get(i).getQUANTITY() ;
+			double f1 = Double.valueOf(salesDetailsList.get(i).getUNIT_PRICE() );
+			double g1 = Double.valueOf(salesDetailsList.get(i).getAMOUNT() );
+			
+			Map<String, Object> result1 = getAllStatesJdbcCall6.withCatalogName("DATA_PKG")
+					.withProcedureName("SALES_DETAIL_INSERT")
+					.declareParameters(new SqlOutParameter("results", OracleTypes.INTEGER))
+					.execute(a1, Integer.valueOf(out), c1, d1, e1, f1, g1);
+			
+			
+			
+		}
+		
+		
+
+		
+
+		
+		
+		return Integer.valueOf(out);
+	
+
+	}
+
+	
+	
+//	test insert ends
 
 }
