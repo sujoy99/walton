@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+  <style>
+        span.error{
+            display:block;
+            visibility:hidden;
+            color:red;
+            font-size:90%;
+        }
+        tr.error{
+            background-color:rgba(255,0,0,0.35);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">Page 1</a></li>
+      <li><a href="#">Page 2</a></li>
+      <li><a href="#">Page 3</a></li>
+    </ul>
+  </div>
+</nav>
+  
+<div class="container">
+  
+		<div class="master">
+        <h2>Sales Invoice</h2>
+        <table class="table table-responsive">
+            <tr>
+                <td>Invoice No</td>
+                <td>
+                    <input type="text" id="invoiceNo" class="form-control" />
+                    <span class="error">Order no required</span>
+                </td>
+                <td>Invoice Date</td>
+                <td>
+                    <input type="date" id="invoiceDate" class="form-control" />
+                    <span class="error">Valid order date required (ex: MM-dd-yyyy)</span>
+                </td>
+
+                <td>Customer Name</td>
+                
+                <td > 
+                <input type="text" id="customerName" class="form-control" />
+                   
+                </td>
+            </tr>
+           
+        </table> 
+    </div>
+
+
+
+
+		<div class="details">
+			<h2>
+					Sales Detail
+			</h2>
+			<table class="table table-responsive">
+					<tr>
+							<td>Line</td>
+							<td>Product</td>
+							<td>Quantity</td>
+							<td>Rate</td>
+							<td>&nbsp;</td>
+					</tr>
+					<tr class="mycontainer" id="mainrow">
+					
+					<td>
+									<input type="text" id="line" class="line form-control" />
+									<span class="error">Valid quantity required</span>
+							</td>
+						
+							<td>
+									<select id="product" class="product form-control">
+											<option>Select</option>
+											<option th:each="p : ${productList}"
+											th:value="${p.ID}"  th:utext="${p.PRODUCT_NAME}"></option>
+									</select>
+									<span class="error">Select product</span>
+							</td>
+							<td>
+									<input type="text" id="quantity" class="quantity form-control" />
+									<span class="error">Valid quantity required</span>
+							</td>
+							<td>
+									<input type="text" id="rate" class="rate form-control" />
+									<span class="error">Valid rate required</span> 
+							</td>
+							<td>
+									<input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+							</td>
+					</tr>
+			</table>
+			<div id="orderItems">
+					<table class="table table-responsive" id="orderdetailsItems"></table>
+					<span id="orderItemError" style="color:red"></span>
+			</div>
+			<div style="padding:10px 0; text-align:right">
+					<input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:10px 20px" />
+			</div>
+	</div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+ <script>
+			$(document).ready(function(){
+				$("#product").change(function(){
+					
+					
+					
+					
+					
+					var x = $("#product").val();
+					
+					console.log(x);
+					
+					if(x == "0"){
+						$("#BRANCH_CODE").empty();
+						$("<option>").val("0").text("Select Branch").appendTo(DropdownBranch);
+					}
+					else{
+					
+						var urlString = "http://localhost:9999/productPrice/"+x;
+						console.log(urlString);
+						
+						$.ajax({
+							method: "GET",
+							url : urlString
+						})
+						.done(function(responseJson){
+							
+							$("#rate").val(responseJson);
+							
+						})
+						.fail(function(){
+							alert("Connection Error");
+						})
+					}
+					
+					
+				})
+			})
+		</script>
+
+
+
+<script>
+
+
+
+$(document).ready(function () {
+		//Add button click event
+		$('#add').click(function () {
+			//validation and add order items
+			var isAllValid = true;
+			
+			
+ 
+ 
+			
+
+ 
+			if (isAllValid) {
+				var $newRow = $('#mainrow').clone().removeAttr('id');
+				$('.pc', $newRow).val($('#productCategory').val());
+				$('.product', $newRow).val($('#product').val());
+ 
+				//Replace add button with remove button
+				$('#add', $newRow).addClass('remove').val('Remove').removeClass('btn-success').addClass('btn-danger');
+ 
+				//remove id attribute from new clone row
+				$('#productCategory,#product,#quantity,#rate,#add', $newRow).removeAttr('id');
+				$('span.error', $newRow).remove();
+				//append clone row
+				$('#orderdetailsItems').append($newRow);
+ 
+				//clear select data
+				$('#productCategory,#product').val('0');
+				$('#quantity,#rate').val('');
+				$('#orderItemError').empty();
+			}
+ 
+		})
+ 
+		//remove button click event
+		$('#orderdetailsItems').on('click', '.remove', function () {
+			$(this).parents('tr').remove();
+		});
+ 
+		$('#submit').click(function () {
+			var isAllValid = true;
+ 
+			//validate order items
+			$('#orderItemError').text('');
+			var list = [];
+			var errorItemCount = 0;
+			$('#orderdetailsItems  tr').each(function (index, ele) {
+
+				// alert(index);
+
+				if (
+					$('select.product', this).val() == "0" ||
+					(parseInt($('.quantity', this).val()) || 0) == 0 ||
+					$('.rate', this).val() == "" ||
+					isNaN($('.rate', this).val())
+					) {
+					errorItemCount++;
+					$(this).addClass('error');
+				} else {
+					var orderItem = {
+						ProductID: $('select.product', this).val(),
+						Quantity: parseInt($('.quantity', this).val()),
+						Rate: parseFloat($('.rate', this).val()),
+						Line: parseInt($('.line', this).val())
+					}
+					list.push(orderItem);
+				}
+				
+
+			})
+ 
+			
+ 
+			
+			console.log("test");
+			console.log(list);
+		
+ 
+			if (isAllValid) {
+				var data = {
+					OrderNo: $('#invoiceNo').val(),
+					OrderDateString: $('#invoiceDate').val(),
+					Description: $('#customerName').val(),
+					OrderDetails: list
+				}
+ 
+				$(this).val('Please wait...');
+
+				console.log("two");
+				console.log(data);
+ 
+				$.ajax({
+					type: 'POST',
+					url: '/test',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function (data) {
+						if (data.status) {
+							alert('Successfully saved');
+							//here we will clear the form
+							list = [];
+							$('#orderNo,#orderDate,#description').val('');
+							$('#orderdetailsItems').empty();
+						}
+						else {
+							alert('Error');
+						}
+						$('#submit').text('Save');
+					},
+					error: function (error) {
+						console.log(error);
+						$('#submit').text('Save');
+					}
+				});
+			}
+ 
+		});
+ 
+	});
+
+
+</script>
+
+</body>
+</html>

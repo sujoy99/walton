@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<style>
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+</style>
+</head>
+<body>
+
+
+	<div th:replace="fragment/navbar :: nav"></div>
+
+
+	<br>
+
+	<div class="container">
+
+
+		<div class="jumbotron">
+			<h3 class="text-center mb-3">Sales Entry</h3>
+			
+			<div class="row">
+				<h4 class="d-inline mr-2">Invoice Num : </h4><span class="mr-5" th:text="${salesInvoice.INVOICE_NUM}"></span>
+				<h4 class="d-inline mr-2">Customer Name : </h4><span class="mr-5" th:text="${salesInvoice.CUSTOMER_NAME}"></span>
+				<h4 class="d-inline mr-2">Invoice Date : </h4><span class="mr-5" th:text="${salesInvoice.INVOICE_DATE}"></span>
+			</div>
+			
+
+		</div>
+
+
+		<div class="card">
+			<h3 class="text-center">Sales List</h3>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr>
+						<th scope="col">Line No.</th>
+						<th scope="col">Product Name</th>
+						<th scope="col">Quantity</th>
+						<th scope="col">Unit Price</th>
+						<th scope="col">Amount</th>
+					</tr>
+				</thead>
+				<tbody class="">
+					<tr th:each="s: ${salesDetailsList}" >
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" href="#" th:text="${s.LINE_NUMBER}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" href="#" th:text="${s.PRODUCT_NAME}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" href="#" th:text="${s.QUANTITY}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" href="#" th:text="${s.UNIT_PRICE}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" href="#" th:text="${s.AMOUNT}"></a>
+						
+						</td>
+						
+					</tr>
+					
+					<tr>
+						<td colspan='5' th:text="'Total Amount :' + ${salesInvoice.TOTAL_AMT}">
+							
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		 <script>
+			$(document).ready(function(){
+				$("#PRODUCT_ID").change(function(){
+					
+					
+					
+					
+					
+					var x = $("#PRODUCT_ID").val();
+					
+					console.log(x);
+					
+					if(x == "0"){
+						$("#BRANCH_CODE").empty();
+						$("<option>").val("0").text("Select Branch").appendTo(DropdownBranch);
+					}
+					else{
+					
+						var urlString = "http://localhost:9999/productPrice/"+x;
+						console.log(urlString);
+						
+						$.ajax({
+							method: "GET",
+							url : urlString
+						})
+						.done(function(responseJson){
+							
+							$("#UNIT_PRICE").val(responseJson);
+							
+						})
+						.fail(function(){
+							alert("Connection Error");
+						})
+					}
+					
+					
+				})
+			})
+		</script>
+</body>
+</html>

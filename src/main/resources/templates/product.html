@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<style>
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+</style>
+</head>
+<body>
+
+
+	<div th:replace="fragment/navbar :: nav"></div>
+
+
+	<br>
+
+	<div class="container">
+
+
+		<div class="jumbotron">
+			<h3 class="text-center mb-3">Product Entry</h3>
+			<form th:action="@{/product}" class="form-inline" th:object="${product}" method="post">
+				<div class="form-group mb-2">
+					<label for="staticEmail2" class="sr-only">Code</label> 
+					<input
+						type="text" name="PRODUCT_CODE" class="form-control"
+						id="PRODUCT_CODE" placeholder="Code" th:value="*{PRODUCT_CODE}">
+				</div>
+				<div class="form-group mx-sm-3 mb-2">
+					<label for="inputPassword2" class="sr-only">Name</label> <input
+						type="text" name="PRODUCT_NAME" class="form-control" id="PRODUCT_NAME"
+						placeholder="Name" th:value="*{PRODUCT_NAME}">
+				</div>
+
+				<div class="form-group mx-sm-3 mb-2">
+					<label for="inputPassword2" class="sr-only">Price</label> <input
+						type="number" class="form-control" name="SELLING_PRICE" id="SELLING_PRICE"
+						placeholder="Price" step="0.01" th:value="*{SELLING_PRICE}">
+				</div>
+				<button type="submit" class="btn btn-primary mb-2" th:if="${flag}=='0' ">Save</button>
+				<input type="submit" th:formaction="@{'/product/'+ ${id} }" class="btn btn-info mb-2" th:if="${flag}=='1' " value="Update"/>
+			</form>
+		</div>
+
+
+		<div class="card">
+			<h3 class="text-center">Product List</h3>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr>
+						<th scope="col">Code</th>
+						<th scope="col">Name</th>
+						<th scope="col">Price</th>
+					</tr>
+				</thead>
+				<tbody class="">
+					<tr th:each="product: ${productList}" >
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/product/'+${product.ID}}" th:text="${product.PRODUCT_CODE}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/product/'+${product.ID}}" th:text="${product.PRODUCT_NAME}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/product/'+${product.ID}}" th:text="${product.SELLING_PRICE}"></a>
+						
+						</td>
+						
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+</body>
+</html>

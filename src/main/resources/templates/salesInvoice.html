@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<style>
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+</style>
+</head>
+<body>
+
+
+	<div th:replace="fragment/navbar :: nav"></div>
+
+
+	<br>
+
+	<div class="container">
+
+
+		<div class="jumbotron">
+			<h3 class="text-center mb-3">Sales Entry</h3>
+			<form th:action="@{/salesInvoice}" class="form-inline" th:object="${salesInvoice}" method="post">
+				<div class="form-group mb-2">
+					<label for="staticEmail2" class="sr-only">Invoice No.</label> 
+					<input
+						type="text" name="INVOICE_NUM" class="form-control"
+						id="INVOICE_NUM" placeholder="Invoice Num" th:value="*{INVOICE_NUM}">
+				</div>
+				<div class="form-group mx-sm-3 mb-2">
+					<label for="inputPassword2" class="sr-only">Invoice Date</label> 
+					<input
+						type="date" name="INVOICE_DATE" class="form-control" id="INVOICE_DATE"
+						placeholder="Invoice Date" th:value="*{INVOICE_DATE}">
+				</div>
+
+				<div class="form-group mx-sm-3 mb-2">
+					<label for="inputPassword2" class="sr-only">Customer Name</label> <input
+						type="text" class="form-control" name="CUSTOMER_NAME" id="CUSTOMER_NAME"
+						placeholder="Customer Name" th:value="*{CUSTOMER_NAME}">
+				</div>
+				<button type="submit" class="btn btn-primary mb-2" th:if="${flag}=='0' ">Save</button>
+				<input type="submit" th:formaction="@{'/salesInvoice/'+ ${id} }" class="btn btn-info mb-2" th:if="${flag}=='1' " value="Update"/>
+			</form>
+		</div>
+
+
+		<div class="card">
+			<h3 class="text-center">Sales List</h3>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr>
+						<th scope="col">Invoice No.</th>
+						
+						<th scope="col">Invoice Date</th>
+						
+						<th scope="col">Customer Name</th>
+					</tr>
+				</thead>
+				<tbody class="">
+					<tr th:each="s : ${salesInvoiceList}" >
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesInvoice/'+${s.ID}}" th:text="${s.INVOICE_NUM}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesInvoice/'+${s.ID}}" th:text="${s.INVOICE_DATE}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesInvoice/'+${s.ID}}" th:text="${s.CUSTOMER_NAME}"></a>
+						
+						</td>
+						
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+</body>
+</html>

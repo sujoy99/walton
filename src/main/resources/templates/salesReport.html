@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<style>
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+</style>
+</head>
+<body>
+
+
+	<div th:replace="fragment/navbar :: nav"></div>
+
+
+	<br>
+
+	<div class="container">
+
+
+
+
+		<div class="card">
+			<h3 class="text-center">Sales List</h3>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr>
+						<th scope="col">Invoice No.</th>
+						
+						<th scope="col">Invoice Date</th>
+						
+						<th scope="col">Customer Name</th>
+					</tr>
+				</thead>
+				<tbody class="">
+					<tr th:each="s : ${salesInvoiceList}" >
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesReport/'+${s.ID}}" th:text="${s.INVOICE_NUM}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesReport/'+${s.ID}}" th:text="${s.INVOICE_DATE}"></a>
+						
+						</td>
+						
+						<td >
+						
+							<a class="row m-0 p-0 d-flex justify-content-center" style="text-decoration:none;color:black" th:href="@{'/salesReport/'+${s.ID}}" th:text="${s.CUSTOMER_NAME}"></a>
+						
+						</td>
+						
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+</body>
+</html>
